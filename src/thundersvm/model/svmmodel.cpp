@@ -13,7 +13,10 @@ using std::setprecision;
 using std::ifstream;
 using std::stringstream;
 using svm_kernel::sum_kernel_values;
+
+#ifdef USE_CUDA
 using svm_kernel::sum_kernel_values_instant;
+#endif
 
 const char *SvmParam::kernel_type_name[6] = {"linear", "polynomial", "rbf", "sigmoid", "precomputed", "NULL"};
 const char *SvmParam::svm_type_name[6] = {"c_svc", "nu_svc", "one_class", "epsilon_svr", "nu_svr",
@@ -144,8 +147,12 @@ SvmModel::predict_dec_values_instant(const DataSet::node2d &instances, SyncArray
         SyncArray<float_type> vote_device(batch_ins.size()*n_classes);
         SyncArray<kernel_type> kernel_values(batch_ins.size() * sv.size());
         k_mat.get_rows(batch_ins, kernel_values);
+
+#ifdef USE_CUDA
         sum_kernel_values_instant(coef, sv.size(), sv_start, n_sv, rho, kernel_values,instance_predict, n_classes,
                           batch_ins.size(),vote_device);
+#endif
+
         if ((instances.end() - batch_start) <= batch_size)
             batch_start = instances.end();
         else
