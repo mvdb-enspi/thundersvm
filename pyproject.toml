@@ -35,7 +35,4 @@ sdist.include = [
 build-dir = "build"
 
 [dependency-groups]
-dev = [
-    "pytest>=7.4.4",
-    "ruff>=0.9.4",
-]
+dev = ["pytest>=7.4.4", "pytest-cov>=4.1.0", "ruff>=0.9.4"]
