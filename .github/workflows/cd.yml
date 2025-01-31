@@ -45,3 +45,14 @@ jobs:
     - name: Build the project
       run: uv build .
 
+    - name: Check installable from sdist
+      run: |
+        uv pip uninstall thundersvm --yes
+        uv pip install dist/thundersvm-*.tar.gz
+        uv run python -c "import thundersvm; print(thundersvm.__version__)"
+
+    - name: Check installable from wheel
+      run: |
+        uv pip uninstall thundersvm --yes
+        uv pip install dist/thundersvm-*.whl
+        uv run python -c "import thundersvm; print(thundersvm.__version__)"
