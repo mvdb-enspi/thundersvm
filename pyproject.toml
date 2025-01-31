@@ -26,5 +26,10 @@ dependencies = ["numpy", "scipy", "scikit-learn"]
 cmake.version = ">=3.15"
 cmake.define = { "USE_CUDA" = "OFF" }
 cmake.args = ["-DBUILD_TESTS=OFF", "-DBUILD_SHARED_LIBS=ON"]
-sdist.include = ["src/thundersvm/*.py", "CMakeLists.txt"]
-wheel.packages = ["src/thundersvm", "CMakeLists.txt"]
+sdist.include = [
+  "src/thundersvm/__init__.py",
+  "src/thundersvm/thundersvm.py",
+  "CMakeLists.txt",
+  "src/thundersvm/cpp/**/*",
+]
+build-dir = "build"

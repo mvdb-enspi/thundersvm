@@ -21,7 +21,7 @@ pip install thundersvm
 
 ### From Source (with GPU support):
 ```bash
-git clone https://github.com/your-username/thundersvm.git
+git clone https://github.com/mvdb-enspi/thundersvm.git
 cd thundersvm
 pip install . --config-settings=cmake.define.USE_CUDA=ON
 ```
@@ -39,7 +39,7 @@ X, y = load_iris(return_X_y=True)
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 # Train SVM classifier
-clf = SVC(kernel='rbf', C=100, gamma='scale')
+clf = SVC(kernel='rbf', C=100, gamma=0.1)
 clf.fit(X_train, y_train)
 
 # Evaluate

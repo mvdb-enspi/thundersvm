@@ -26,7 +26,5 @@ else ()
     target_link_libraries(thundersvm OpenMP::OpenMP_CXX)
 endif ()
 
-install(TARGETS thundersvm
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
-    INCLUDES DESTINATION include)
+# Only install the library binary
+install(TARGETS thundersvm LIBRARY DESTINATION thundersvm/lib)

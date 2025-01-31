@@ -1,7 +1,5 @@
-"""ThunderSVM Python bindings"""
-
 from sys import platform
-import os
+from pathlib import Path
 from ctypes import (
     CDLL,
     c_void_p,
@@ -34,14 +32,14 @@ elif platform == "darwin":
 else:
     raise EnvironmentError("OS not supported!")
 
-lib_path = os.path.join(os.path.dirname(__file__), shared_library_name)
-if not os.path.exists(lib_path):
+lib_path = Path(__file__).parent / "lib" / shared_library_name
+if not lib_path.exists():
     raise FileNotFoundError(
         f"Could not find {shared_library_name} in package directory or build directory"
     )
 
 # Simplify library loading
-lib = CDLL(lib_path)
+lib = CDLL(str(lib_path))
 
 SVM_TYPE = ["c_svc", "nu_svc", "one_class", "epsilon_svr", "nu_svr"]
 KERNEL_TYPE = ["linear", "polynomial", "rbf", "sigmoid", "precomputed"]

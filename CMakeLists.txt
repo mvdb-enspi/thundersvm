@@ -88,15 +88,15 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/src/thundersvm/cpp)
 # Installation
 install(TARGETS thundersvm
     ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib
+    LIBRARY DESTINATION thundersvm/lib
     INCLUDES DESTINATION include
 )
 
 install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/thundersvm/
-  DESTINATION .
-  FILES_MATCHING PATTERN "*.py"
-  PATTERN "cpp" EXCLUDE
+  FILES
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/thundersvm/__init__.py
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/thundersvm/thundersvm.py
+  DESTINATION thundersvm
 )
 
 # Remove header installation completely
