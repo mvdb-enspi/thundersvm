@@ -1,3 +1,5 @@
 #cmakedefine DATASET_DIR "@DATASET_DIR@"
 #cmakedefine USE_CUDA
 #cmakedefine USE_DOUBLE
+#define PROJECT_VERSION "@PROJECT_VERSION@"
+#define USE_DOUBLE @USE_DOUBLE@

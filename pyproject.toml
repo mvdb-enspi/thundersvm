@@ -1,0 +1,30 @@
+[build-system]
+requires = ["scikit-build-core>=0.10.7"]
+build-backend = "scikit_build_core.build"
+
+[project]
+name = "thundersvm"
+version = "0.4.0"
+authors = [
+  { name = "Zeyi Wen", email = "zeyi.wen@anu.edu.au" },
+  { name = "Jianbin Qin", email = "jianbin.qin@anu.edu.au" },
+  { name = "Mark van der Broek", email = "mark.van.der.broek@enspired-trading.com" },
+]
+description = "A fast SVM library on GPUs and CPUs"
+readme = "README.md"
+requires-python = ">=3.7"
+license = { text = "Apache-2.0" }
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+dependencies = ["numpy", "scipy", "scikit-learn"]
+
+
+[tool.scikit-build]
+cmake.version = ">=3.15"
+cmake.define = { "USE_CUDA" = "OFF" }
+cmake.args = ["-DBUILD_TESTS=OFF", "-DBUILD_SHARED_LIBS=ON"]
+sdist.include = ["src/thundersvm/*.py", "CMakeLists.txt"]
+wheel.packages = ["src/thundersvm", "CMakeLists.txt"]
