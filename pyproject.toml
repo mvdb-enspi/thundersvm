@@ -24,8 +24,6 @@ dependencies = ["numpy", "scipy", "scikit-learn"]
 
 [tool.scikit-build]
 cmake.version = ">=3.15"
-cmake.define = { "USE_CUDA" = "OFF" }
-cmake.args = ["-DBUILD_TESTS=OFF", "-DBUILD_SHARED_LIBS=ON"]
 sdist.include = [
   "src/thundersvm/__init__.py",
   "src/thundersvm/thundersvm.py",
@@ -33,6 +31,11 @@ sdist.include = [
   "src/thundersvm/cpp/**/*",
 ]
 build-dir = "build"
+
+[tool.scikit-build.cmake.define]
+USE_CUDA = { env = "THUNDERSVM_USE_CUDA", default = "OFF" }
+BUILD_SHARED_LIBS = { env = "THUNDERSVM_BUILD_SHARED_LIBS", default = "ON" }
+BUILD_TESTS = { env = "BUILD_TESTS", default = "OFF" }
 
 [dependency-groups]
 dev = ["pytest>=7.4.4", "pytest-cov>=4.1.0", "ruff>=0.9.4"]
