@@ -10,14 +10,18 @@ file(GLOB SRC
     ${CMAKE_CURRENT_SOURCE_DIR}/util/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/util/*.h
     ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.h
 )
 
 if (USE_CUDA)
     file(GLOB SRC_KERNEL kernel/*.cu)
     list(APPEND SRC ${SRC_KERNEL})
-    cuda_add_library(thundersvm ${SRC})
+    add_library(thundersvm SHARED ${SRC} ${SRC_KERNEL})
+    set_target_properties(thundersvm PROPERTIES
+        CUDA_SEPARABLE_COMPILATION ON
+        POSITION_INDEPENDENT_CODE ON
+    )
+    target_include_directories(thundersvm PRIVATE ${CUDAToolkit_INCLUDE_DIRS})
     target_link_libraries(thundersvm ${CUDA_cusparse_LIBRARY} OpenMP::OpenMP_CXX)
 else ()
     file(GLOB SRC_CPU_KERNEL ${CMAKE_CURRENT_SOURCE_DIR}/kernel/*.cpp)

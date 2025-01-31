@@ -162,14 +162,14 @@ namespace svm_kernel {
 
         size_t buffer_size = 0;
         cusparseSpMM_bufferSize(handle, CUSPARSE_OPERATION_NON_TRANSPOSE, CUSPARSE_OPERATION_TRANSPOSE,
-                                &one, matA, matB, &zero, matC, data_type, CUSPARSE_CSRMM_ALG1,
+                                &one, matA, matB, &zero, matC, data_type, CUSPARSE_SPMM_ALG_DEFAULT,
                                 &buffer_size);
 
         void *p_buffer = nullptr;
         cudaMalloc((void**)&p_buffer, buffer_size);
 
         cusparseSpMM(handle, CUSPARSE_OPERATION_NON_TRANSPOSE, CUSPARSE_OPERATION_TRANSPOSE,
-                    &one, matA, matB, &zero, matC, data_type, CUSPARSE_CSRMM_ALG1, p_buffer);
+                    &one, matA, matB, &zero, matC, data_type, CUSPARSE_SPMM_ALG_DEFAULT, p_buffer);
 
         cudaFree(p_buffer);
         cusparseDestroySpMat(matA);

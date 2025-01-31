@@ -2,13 +2,24 @@ cmake_minimum_required(VERSION 3.15)
 
 cmake_policy(SET CMP0048 NEW)
 cmake_policy(SET CMP0042 NEW)
-project(${SKBUILD_PROJECT_NAME} VERSION 0.3.5 LANGUAGES CXX)
+
+option(USE_CUDA "Compile with CUDA" ON)
+
+set(PROJECT_LANGUAGES CXX)
+if(USE_CUDA)
+    list(APPEND PROJECT_LANGUAGES CUDA)
+endif()
+
+project(thundersvm
+    LANGUAGES ${PROJECT_LANGUAGES}
+    VERSION ${PROJECT_VERSION}
+)
 
 # CUDA configuration
 if(USE_CUDA)
-    enable_language(CUDA)
     find_package(CUDAToolkit REQUIRED)
-    list(APPEND CMAKE_CUDA_ARCHITECTURES "native")
+    # Replace with architectures supported by your GPU
+    set(CMAKE_CUDA_ARCHITECTURES "75;80;86")  # Example for Turing/Ampere GPUs
 endif()
 
 if(MSVC)
@@ -16,7 +27,6 @@ if(MSVC)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 endif()
 
-option(USE_CUDA "Compile with CUDA" ON)
 option(BUILD_TESTS "Build Tests" OFF)
 option(USE_DOUBLE "Use double as kernel_type" OFF)
 
