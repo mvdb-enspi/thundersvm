@@ -1,0 +1,51 @@
+name: CI Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test-cpp:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake libomp-dev libopenblas-dev
+
+    - name: Configure CMake
+      run: cmake -B build -DBUILD_TESTS=ON -DUSE_CUDA=OFF
+
+    - name: Build and test
+      run: cmake --build build --target run_tests
+
+  test-python:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential cmake
+
+    - name: Install uv and set the python version
+      uses: astral-sh/setup-uv@v5
+      with:
+        python-version: 3.12
+
+    - name: Install the project
+      run: uv sync
+
+    - name: Run Python tests
+      run: uv test

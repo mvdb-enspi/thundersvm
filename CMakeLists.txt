@@ -27,7 +27,7 @@ if(MSVC)
     set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 endif()
 
-option(BUILD_TESTS "Build Tests" OFF)
+option(BUILD_TESTS "Build test executables" OFF)
 option(USE_DOUBLE "Use double as kernel_type" OFF)
 
 if(USE_DOUBLE)
@@ -109,8 +109,67 @@ install(
   DESTINATION thundersvm
 )
 
-# Remove header installation completely
 
 if (BUILD_TESTS)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/src/test)
+    include(FetchContent)
+    FetchContent_Declare(
+    googletest
+        URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+    )
+
+    FetchContent_MakeAvailable(googletest)
+    enable_testing()
+
+    add_executable(thundersvm_test
+        src/thundersvm/cpp/test/test_dataset.cpp
+        src/thundersvm/cpp/test/test_cross_validation.cpp
+        src/thundersvm/cpp/test/test_svr.cpp
+        src/thundersvm/cpp/test/test_svc.cpp
+        src/thundersvm/cpp/test/test_kernelmatrix.cpp
+        src/thundersvm/cpp/test/test_nusvc.cpp
+        src/thundersvm/cpp/test/test_nusvr.cpp
+        src/thundersvm/cpp/test/test_oneclass_svc.cpp
+        src/thundersvm/cpp/test/test_syncarray.cpp
+        src/thundersvm/cpp/test/test_syncmem.cpp
+    )
+
+    # Common includes for all builds
+    target_include_directories(thundersvm_test PRIVATE
+        ${COMMON_INCLUDES}
+    )
+
+    # Conditional CUDA dependencies
+    if(USE_CUDA)
+        target_include_directories(thundersvm_test PRIVATE
+            ${CUDAToolkit_INCLUDE_DIRS}
+        )
+        target_link_libraries(thundersvm_test PRIVATE
+            ${CUDAToolkit_LIBRARIES}
+        )
+        target_compile_options(thundersvm_test PRIVATE
+            $<$<COMPILE_LANGUAGE:CUDA>:${CUDA_NVCC_FLAGS}>
+        )
+        target_compile_definitions(thundersvm_test PRIVATE
+            -D_MWAITXINTRIN_H_INCLUDED
+            -D_FORCE_INLINES
+        )
+    endif()
+
+    # Core dependencies for all builds
+    target_link_libraries(thundersvm_test
+        PRIVATE
+        thundersvm
+        GTest::gtest_main
+        GTest::gmock_main
+    )
+
+    include(GoogleTest)
+    gtest_discover_tests(thundersvm_test)
+
+    # Add this after the test configuration
+    add_custom_target(run_tests
+        DEPENDS thundersvm_test  # Ensure test executable is built
+        COMMAND ${CMAKE_CTEST_COMMAND} --output-on-failure
+        COMMENT "Running tests..."
+    )
 endif()
