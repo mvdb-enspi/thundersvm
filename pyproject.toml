@@ -33,7 +33,7 @@ sdist.include = [
 build-dir = "build"
 
 [tool.scikit-build.cmake.define]
-USE_CUDA = { env = "THUNDERSVM_USE_CUDA", default = "OFF" }
+USE_CUDA = { env = "THUNDERSVM_USE_CUDA", default = "ON" }
 BUILD_SHARED_LIBS = { env = "THUNDERSVM_BUILD_SHARED_LIBS", default = "ON" }
 BUILD_TESTS = { env = "BUILD_TESTS", default = "OFF" }
 
